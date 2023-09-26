@@ -1,5 +1,6 @@
 package UserInterface;
 import Game.Cell;
+import Game.Player;
 import com.sun.tools.javac.Main;
 
 import javax.swing.*;
@@ -31,6 +32,14 @@ public class MainUI implements ActionListener {
             }
         }
 
+        Player p = new Player(false);
+        Player ai = new Player(true);
+
+        board[0][3].setPlayer(ai);
+        board[7][2].setPlayer(p);
+
+        refreshGameUI();
+
         mainUI.add(grid);
         mainUI.setMinimumSize(new Dimension(500,500));
         mainUI.setVisible(true);
@@ -45,7 +54,25 @@ public class MainUI implements ActionListener {
     }
 
     public void refreshGameUI() {
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 6; j++){
+                if(!board[i][j].getOccupied() && board[i][j].getHasToken()){
+                    board[i][j].setBackground(Color.YELLOW);
+                }
+                else if (!board[i][j].getOccupied() && !board[i][j].getHasToken()){
+                    board[i][j].setBackground(Color.WHITE);
+                }
+                else if(board[i][j].getOccupied() && board[i][j].getPlayer().getIsAI()){
+                    board[i][j].setBackground(Color.BLUE);
+                }
+                else if (board[i][j].getOccupied() && !board[i][j].getPlayer().getIsAI()){
+                    board[i][j].setBackground(Color.GREEN);
+                }
+            }
+        }
 
+        mainUI.repaint();
+        grid.repaint();
     }
 
     @Override

@@ -6,6 +6,8 @@ public class Cell extends JButton {
     private boolean isOccupied;
     private boolean hasToken;
 
+    private Player p;
+
     public Cell(boolean isOccupied, boolean hasToken){
         super();
         this.isOccupied = isOccupied;
@@ -16,7 +18,7 @@ public class Cell extends JButton {
         isOccupied = occupied;
     }
 
-    public boolean getOccupied(boolean occupied){
+    public boolean getOccupied(){
         return isOccupied;
     }
 
@@ -26,5 +28,13 @@ public class Cell extends JButton {
 
     public boolean getHasToken() {
         return hasToken;
+    }
+
+    public Player getPlayer(){
+        return p;
+    }
+
+    public void setPlayer(Player p){
+        this.p = p;
     }
 }
