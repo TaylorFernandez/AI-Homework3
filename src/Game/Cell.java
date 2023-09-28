@@ -36,5 +36,17 @@ public class Cell extends JButton {
 
     public void setPlayer(Player p){
         this.p = p;
+        this.isOccupied = true;
+    }
+
+    public Player removePlayer(){
+        Player temp = null;
+        if(this.p != null){
+            temp = p;
+            this.isOccupied = false;
+            p = null;
+
+        }
+        return temp;
     }
 }

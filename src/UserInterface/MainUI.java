@@ -1,6 +1,7 @@
 package UserInterface;
 import Game.Cell;
 import Game.Player;
+import Observer.Observable;
 import com.sun.tools.javac.Main;
 
 import javax.swing.*;
@@ -8,14 +9,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MainUI implements ActionListener {
+public class MainUI implements ActionListener, Observable {
     //6 * 8 grid of buttons.
     JFrame mainUI;
     JPanel grid;
     Cell[][] board = new Cell[8][6];
 
     static MainUI singleton;
-    private MainUI(){
+    private MainUI(Player player, Player AI){
         mainUI = new JFrame("Isolation");
         grid = new JPanel(new GridLayout(8,6));
         grid.setBackground(Color.YELLOW);
@@ -32,11 +33,8 @@ public class MainUI implements ActionListener {
             }
         }
 
-        Player p = new Player(false);
-        Player ai = new Player(true);
-
-        board[0][3].setPlayer(ai);
-        board[7][2].setPlayer(p);
+        board[0][3].setPlayer(AI);
+        board[7][2].setPlayer(player);
 
         refreshGameUI();
 
@@ -46,9 +44,9 @@ public class MainUI implements ActionListener {
 
     }
 
-    public static MainUI getSingleton(){
+    public static MainUI getSingleton(Player player, Player AI){
         if(singleton == null){
-            singleton = new MainUI();
+            singleton = new MainUI(player, AI);
         }
         return singleton;
     }
@@ -64,9 +62,11 @@ public class MainUI implements ActionListener {
                 }
                 else if(board[i][j].getOccupied() && board[i][j].getPlayer().getIsAI()){
                     board[i][j].setBackground(Color.BLUE);
+                    board[i][j].setLabel("AI");
                 }
                 else if (board[i][j].getOccupied() && !board[i][j].getPlayer().getIsAI()){
                     board[i][j].setBackground(Color.GREEN);
+                    board[i][j].setLabel("Player");
                 }
             }
         }
@@ -78,5 +78,14 @@ public class MainUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    public Cell[][] getBoard() {
+        return board;
+    }
+
+    @Override
+    public void update() {
+        refreshGameUI();
     }
 }
