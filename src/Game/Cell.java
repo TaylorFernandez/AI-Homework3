@@ -1,31 +1,49 @@
 package Game;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class Cell extends JButton {
     private boolean isOccupied;
     private boolean hasToken;
 
+    private int row;
+    private int col;
+
+
     private Player p;
 
-    public Cell(boolean isOccupied, boolean hasToken){
+    public Cell(boolean isOccupied, boolean hasToken, int row, int col){
         super();
         this.isOccupied = isOccupied;
         this.hasToken = hasToken;
-    }
-
-    public void setOccupied(boolean occupied){
-        isOccupied = occupied;
+        this.row = row;
+        this.col = col;
     }
 
     public boolean getOccupied(){
         return isOccupied;
     }
 
-    public void setHasToken(boolean hasToken){
-        this.hasToken = hasToken;
+    public int[] getRowCol(){
+        int coords[] = new int[2];
+        coords[0] = row;
+        coords[1] = col;
+        return coords;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return isOccupied == cell.isOccupied && hasToken == cell.hasToken && row == cell.row && col == cell.col && Objects.equals(p, cell.p);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isOccupied, hasToken, row, col, p);
+    }
     public boolean getHasToken() {
         return hasToken;
     }
@@ -43,10 +61,16 @@ public class Cell extends JButton {
         Player temp = null;
         if(this.p != null){
             temp = p;
-            this.isOccupied = false;
+            isOccupied = false;
+            temp.pickupToken();
+            hasToken = false;
             p = null;
 
         }
         return temp;
+    }
+
+    public String toString(){
+        return "Cell: " + row + "," + col;
     }
 }
