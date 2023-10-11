@@ -77,11 +77,11 @@ public class MainUI implements ActionListener, Observable {
                 }
                 else if(board[i][j].getOccupied() && board[i][j].getPlayer().getIsAI()){
                     board[i][j].setBackground(Color.BLUE);
-                    board[i][j].setLabel("AI");
+                    board[i][j].setLabel("Player 2");
                 }
                 else if (board[i][j].getOccupied() && !board[i][j].getPlayer().getIsAI()){
                     board[i][j].setBackground(Color.GREEN);
-                    board[i][j].setLabel("Player");
+                    board[i][j].setLabel("Player 1");
                 }else if(board[i][j].getBackground() == Color.ORANGE){
                     board[i][j].setBackground(Color.YELLOW);
                     board[i][j].setLabel("");
@@ -143,6 +143,18 @@ public class MainUI implements ActionListener, Observable {
             board[current.getRowCol()[0]][current.getRowCol()[1]].removePlayer();
             lastClicked.setPlayer(current);
             current.setRowCol(lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
+            lastClicked = null;
+            refreshGameUI();
+
+            System.out.println("Now chose a square to take!");
+            while(lastClicked == null){}
+            board[lastClicked.getRowCol()[0]][lastClicked.getRowCol()[1]].removeCell();
+
+            if(current.getIsAI() && moves.isEmpty()){
+                System.out.println("The winner is the player");
+            }else  {
+                System.out.println("The winner is the AI");
+            }
 
             if(!current.getIsAI()){
                 current = AI;
@@ -150,14 +162,6 @@ public class MainUI implements ActionListener, Observable {
                 current = player;
             }
             refreshGameUI();
-        }
-
-        if(player.getNumTokens() > AI.getNumTokens()){
-            System.out.println("The winner is the player with " + player.getNumTokens() + " tokens!");
-        }else if(player.getNumTokens() < AI.getNumTokens()){
-            System.out.println("The winner is the AI with " + AI.getNumTokens() + " tokens!");
-        }else{
-            System.out.println("The game ends in a tie!");
         }
     }
 

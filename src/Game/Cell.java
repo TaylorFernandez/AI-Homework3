@@ -32,6 +32,10 @@ public class Cell extends JButton {
         return coords;
     }
 
+    public void removeCell(){
+        this.hasToken = false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,8 +66,6 @@ public class Cell extends JButton {
         if(this.p != null){
             temp = p;
             isOccupied = false;
-            temp.pickupToken();
-            hasToken = false;
             p = null;
 
         }
