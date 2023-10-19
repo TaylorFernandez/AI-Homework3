@@ -109,9 +109,9 @@ public class MainUI implements ActionListener, Observable {
 
     //Player selects one of the cells surrounding the player; can only select a cell if it has a token left
     //game runs until a player is surrounded with cells that don't have tokens (cannot move)
+    Player current;
     private void runGameLoop(){
         Random r = new Random();
-        Player current;
 
         if(r.nextInt(50) % 2 == 0){
             current = AI;
@@ -138,17 +138,7 @@ public class MainUI implements ActionListener, Observable {
                 }
             }
 
-            System.out.println("Valid Move!");
-
-            board[current.getRowCol()[0]][current.getRowCol()[1]].removePlayer();
-            lastClicked.setPlayer(current);
-            current.setRowCol(lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
-            lastClicked = null;
-            refreshGameUI();
-
-            System.out.println("Now chose a square to take!");
-            while(lastClicked == null){}
-            board[lastClicked.getRowCol()[0]][lastClicked.getRowCol()[1]].removeCell();
+            movePlayer(lastClicked.getRowCol()[0],lastClicked.getRowCol()[1]);
 
             if(current.getIsAI() && moves.isEmpty()){
                 System.out.println("The winner is the player");
@@ -165,6 +155,19 @@ public class MainUI implements ActionListener, Observable {
         }
     }
 
+    private void movePlayer(int row, int col){
+        System.out.println("Valid Move!");
+
+        board[current.getRowCol()[0]][current.getRowCol()[1]].removePlayer();
+        lastClicked.setPlayer(current);
+        current.setRowCol(lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
+        lastClicked = null;
+        refreshGameUI();
+
+        System.out.println("Now chose a square to take!");
+        while(lastClicked == null){}
+        board[lastClicked.getRowCol()[0]][lastClicked.getRowCol()[1]].removeCell();
+    }
 
     //Used for checking each of the surrounding cells for a given input
     int[][] directions = {
