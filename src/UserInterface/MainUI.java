@@ -123,22 +123,26 @@ public class MainUI implements ActionListener, Observable {
             System.out.println("Current Player: " + current.toString());
 
             System.out.println(moves);
+            if(!current.getIsAI()) {
+                boolean hasClickedValidCell = false;
+                while (!hasClickedValidCell) {
+                    lastClicked = null;
+                    while (lastClicked == null) {
+                        Thread.onSpinWait();
+                    }
+                    System.out.println("Checking if selected cell is valid");
+                    if (moves.contains(lastClicked)) {
+                        hasClickedValidCell = true;
+                    } else {
+                        System.out.println("Move not valid");
+                    }
+                }
 
-            boolean hasClickedValidCell = false;
-            while (!hasClickedValidCell) {
-                lastClicked = null;
-                while (lastClicked == null) {
-                    Thread.onSpinWait();
-                }
-                System.out.println("Checking if selected cell is valid");
-                if (moves.contains(lastClicked)) {
-                    hasClickedValidCell = true;
-                }else{
-                    System.out.println("Move not valid");
-                }
+                movePlayer(false, lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
+            }else{
+                int nextMove = r.nextInt(moves.size());
+                movePlayer(true, moves.get(nextMove).getRowCol()[0], moves.get(nextMove).getRowCol()[1]);
             }
-
-            movePlayer(lastClicked.getRowCol()[0],lastClicked.getRowCol()[1]);
 
             if(current.getIsAI() && moves.isEmpty()){
                 System.out.println("The winner is the player");
@@ -155,18 +159,34 @@ public class MainUI implements ActionListener, Observable {
         }
     }
 
-    private void movePlayer(int row, int col){
-        System.out.println("Valid Move!");
-
+    private void movePlayer(boolean isAI, int row, int col){
         board[current.getRowCol()[0]][current.getRowCol()[1]].removePlayer();
-        lastClicked.setPlayer(current);
-        current.setRowCol(lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
-        lastClicked = null;
-        refreshGameUI();
 
-        System.out.println("Now chose a square to take!");
-        while(lastClicked == null){}
-        board[lastClicked.getRowCol()[0]][lastClicked.getRowCol()[1]].removeCell();
+        if(!isAI) {
+            lastClicked.setPlayer(current);
+            current.setRowCol(lastClicked.getRowCol()[0], lastClicked.getRowCol()[1]);
+            lastClicked = null;
+            refreshGameUI();
+            while (lastClicked == null) {
+            }
+            board[lastClicked.getRowCol()[0]][lastClicked.getRowCol()[1]].removeCell();
+        }else{
+            board[row][col].setPlayer(current);
+            current.setRowCol(row, col);
+            Random rand = new Random();
+            boolean hasTakenToken = false;
+            int r,c;
+            while(!hasTakenToken){
+                r = rand.nextInt(7);
+                c = rand.nextInt(5);
+                if(board[r][c].getHasToken()){
+                    board[r][c].removeCell();
+                    hasTakenToken = true;
+                }
+
+            }
+        }
+        refreshGameUI();
     }
 
     //Used for checking each of the surrounding cells for a given input
@@ -178,7 +198,7 @@ public class MainUI implements ActionListener, Observable {
     int numRows = board.length;
     int numCols = board[0].length;
 
-    private List<Cell> getAvailableMoves(int row, int col){
+    public List<Cell> getAvailableMoves(int row, int col){
         List<Cell> availableMoves = new ArrayList<Cell>();
         int curRow;
         int curCol;
@@ -201,4 +221,6 @@ public class MainUI implements ActionListener, Observable {
         grid.repaint();
         return availableMoves;
     }
+
+
 }
